@@ -1,0 +1,434 @@
+
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --navy:#0A1628;--teal:#0D7A5F;--teal-bg:#E6F4F0;--teal-mid:#1A9B78;--teal-border:#9FE1CB;
+  --amber:#BA7517;--amber-bg:#FEF6E4;--amber-border:#F0D06A;
+  --red:#A32D2D;--red-bg:#FCEBEB;--red-border:#F7C1C1;
+  --blue:#185FA5;--blue-bg:#E6F1FB;--blue-border:#B5D4F4;
+  --gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;--gray-300:#DEE2E6;--gray-400:#868E96;--gray-600:#495057;
+  --r:6px;--mono:'DM Mono',monospace;
+}
+body{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);background:var(--gray-50);line-height:1.5}
+
+.topbar{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:2px solid var(--teal)}
+.topbar-logo{background:var(--teal);color:#fff;font-weight:600;font-size:11px;padding:3px 9px;border-radius:4px;letter-spacing:.5px}
+.topbar-title{color:#fff;font-size:13px;font-weight:500}
+.topbar-badge{margin-left:auto;background:rgba(255,255,255,.1);color:rgba(255,255,255,.7);font-size:10px;padding:3px 8px;border-radius:20px}
+
+.body{max-width:660px;margin:0 auto;padding:16px}
+
+.section{background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.sec-head{padding:10px 14px;background:var(--gray-50);border-bottom:0.5px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.sec-title{font-weight:500;font-size:13px;display:flex;align-items:center;gap:6px}
+.sec-title i{font-size:15px;color:var(--teal)}
+.sec-body{padding:14px}
+
+.solicitud-card{background:var(--blue-bg);border:0.5px solid var(--blue-border);border-radius:var(--r);padding:12px 14px;display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.sol-icon{width:36px;height:36px;background:var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sol-icon i{color:#fff;font-size:18px}
+.sol-info{flex:1}
+.sol-name{font-weight:500;font-size:13px;color:var(--navy)}
+.sol-sub{font-size:11px;color:var(--blue)}
+.sol-time{font-size:11px;color:var(--gray-400);white-space:nowrap}
+
+.btn{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;border-radius:var(--r);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;cursor:pointer;border:0.5px solid var(--gray-300);background:#fff;color:var(--navy);transition:all .15s}
+.btn:hover{background:var(--gray-50);border-color:var(--gray-400)}
+.btn-primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.btn-primary:hover{background:var(--teal-mid)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+
+.check-grid{display:flex;flex-direction:column;gap:6px}
+.check-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:0.5px solid var(--gray-200);border-radius:var(--r);transition:all .3s}
+.check-row.running{border-color:var(--amber-border);background:var(--amber-bg)}
+.check-row.ok{border-color:var(--teal-border);background:var(--teal-bg)}
+.check-row.fail{border-color:var(--red-border);background:var(--red-bg)}
+.check-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;border:0.5px solid var(--gray-200);background:var(--gray-100)}
+.check-row.running .check-icon{background:var(--amber-bg);border-color:var(--amber-border);animation:spin 1s linear infinite}
+.check-row.ok .check-icon{background:var(--teal-bg);border-color:var(--teal-border)}
+.check-row.fail .check-icon{background:var(--red-bg);border-color:var(--red-border)}
+@keyframes spin{to{transform:rotate(360deg)}}
+.check-label{flex:1;font-size:12px;font-weight:500}
+.check-source{font-size:10px;color:var(--gray-400);white-space:nowrap}
+.check-result{font-size:11px;font-weight:500;white-space:nowrap}
+.check-row.ok .check-result{color:var(--teal)}
+.check-row.fail .check-result{color:var(--red)}
+.check-row.running .check-result{color:var(--amber)}
+
+.doc-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.doc-chip{display:flex;align-items:center;gap:6px;padding:6px 8px;border:0.5px solid var(--gray-200);border-radius:4px;font-size:11px}
+.doc-chip.ok{border-color:var(--teal-border);background:var(--teal-bg);color:#085041}
+.doc-chip.fail{border-color:var(--red-border);background:var(--red-bg);color:var(--red)}
+.doc-chip i{font-size:13px;flex-shrink:0}
+
+.exp-box{background:var(--teal-bg);border:1px solid var(--teal-border);border-radius:var(--r);padding:14px;text-align:center}
+.exp-num{font-family:var(--mono);font-size:20px;font-weight:500;color:var(--teal);letter-spacing:1px;margin:4px 0 2px}
+.exp-sub{font-size:11px;color:#0F6E56}
+
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-row{display:flex;gap:10px;align-items:flex-start}
+.tl-left{display:flex;flex-direction:column;align-items:center;width:20px;flex-shrink:0}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-dot.done{background:var(--teal)}
+.tl-dot.pending{background:var(--gray-300)}
+.tl-dot.warn{background:var(--amber)}
+.tl-line{width:1px;background:var(--gray-200);flex:1;min-height:16px}
+.tl-content{padding-bottom:12px;flex:1}
+.tl-title{font-size:12px;font-weight:500}
+.tl-detail{font-size:11px;color:var(--gray-400);margin-top:1px}
+.tl-time{font-size:10px;color:var(--gray-400);margin-top:2px}
+
+.notif-card{border:0.5px solid var(--gray-200);border-radius:var(--r);overflow:hidden}
+.notif-header{background:var(--gray-50);padding:8px 12px;border-bottom:0.5px solid var(--gray-200);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gray-600)}
+.notif-body{padding:12px;font-size:12px;line-height:1.7;color:var(--navy)}
+.notif-hl{background:var(--teal-bg);border-left:2px solid var(--teal);padding:6px 10px;border-radius:0;margin:8px 0;font-family:var(--mono);font-size:12px;color:var(--teal)}
+
+.alert{border-radius:var(--r);padding:8px 12px;font-size:12px;display:flex;gap:8px;align-items:flex-start;margin-bottom:10px}
+.alert-warn{background:var(--amber-bg);border:0.5px solid var(--amber-border);color:#7A5C00}
+.alert-ok{background:var(--teal-bg);border:0.5px solid var(--teal-border);color:#085041}
+.alert-info{background:var(--blue-bg);border:0.5px solid var(--blue-border);color:#0C447C}
+
+.state-bar{display:flex;gap:0;margin-bottom:14px}
+.state-step{flex:1;padding:6px 4px;text-align:center;font-size:10px;border-bottom:2px solid var(--gray-200);color:var(--gray-400);transition:all .3s}
+.state-step.done{border-bottom-color:var(--teal);color:var(--teal)}
+.state-step.active{border-bottom-color:var(--amber);color:var(--amber);font-weight:500}
+
+.subsanar-list{display:flex;flex-direction:column;gap:4px}
+.subsanar-item{display:flex;align-items:center;gap:6px;padding:6px 8px;background:var(--red-bg);border:0.5px solid var(--red-border);border-radius:4px;font-size:11px;color:var(--red)}
+.subsanar-item i{font-size:13px;flex-shrink:0}
+
+.pill{display:inline-flex;align-items:center;gap:3px;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:600}
+.pill-ok{background:var(--teal-bg);color:#085041}
+.pill-warn{background:var(--amber-bg);color:var(--amber)}
+.pill-fail{background:var(--red-bg);color:var(--red)}
+.pill-info{background:var(--blue-bg);color:var(--blue)}
+</style>
+
+<div class="topbar">
+  <span class="topbar-logo">ARAP</span>
+  <span class="topbar-title">Fase 2 — Validación automática y expediente digital</span>
+  <span class="topbar-badge">Motor de validación v1.0 · Piloto</span>
+</div>
+
+<div class="body">
+
+<div class="state-bar" id="state-bar">
+  <div class="state-step active" id="st0">1 · Solicitud recibida</div>
+  <div class="state-step" id="st1">2 · Verificando</div>
+  <div class="state-step" id="st2">3 · Expediente creado</div>
+  <div class="state-step" id="st3">4 · Notificado</div>
+</div>
+
+<div class="solicitud-card">
+  <div class="sol-icon"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+  <div class="sol-info">
+    <div class="sol-name">Acuícola Veraguas S.A. — Granja tilapia Río Santa María</div>
+    <div class="sol-sub">Enviado por portal · 30 may 2026 · 09:14 am · Representante: Lic. Carlos Núñez</div>
+  </div>
+  <div class="sol-time">Hace 2 min</div>
+</div>
+
+<div class="section">
+  <div class="sec-head">
+    <div class="sec-title"><i class="ti ti-database" aria-hidden="true"></i> Verificaciones automáticas interinstitucionales</div>
+    <span class="pill pill-info" id="verif-badge">Pendiente</span>
+  </div>
+  <div class="sec-body">
+    <div class="check-grid" id="check-grid">
+      <div class="check-row" id="chk-cedula">
+        <div class="check-icon" id="ico-cedula"><i class="ti ti-user" aria-hidden="true"></i></div>
+        <div class="check-label">Cédula representante legal<div class="check-source">Tribunal Electoral · API REST</div></div>
+        <div class="check-result" id="res-cedula">—</div>
+      </div>
+      <div class="check-row" id="chk-registro">
+        <div class="check-icon" id="ico-registro"><i class="ti ti-building" aria-hidden="true"></i></div>
+        <div class="check-label">Persona jurídica en Registro Público<div class="check-source">Registro Público · API REST</div></div>
+        <div class="check-result" id="res-registro">—</div>
+      </div>
+      <div class="check-row" id="chk-pys">
+        <div class="check-icon" id="ico-pys"><i class="ti ti-receipt" aria-hidden="true"></i></div>
+        <div class="check-label">Paz y Salvo Nacional vigente<div class="check-source">DGI · Ministerio de Economía</div></div>
+        <div class="check-result" id="res-pys">—</div>
+      </div>
+      <div class="check-row" id="chk-pysarap">
+        <div class="check-icon" id="ico-pysarap"><i class="ti ti-fish" aria-hidden="true"></i></div>
+        <div class="check-label">Paz y Salvo ARAP<div class="check-source">Sistema interno ARAP · D.E. 111/2018</div></div>
+        <div class="check-result" id="res-pysarap">—</div>
+      </div>
+      <div class="check-row" id="chk-eia">
+        <div class="check-icon" id="ico-eia"><i class="ti ti-leaf" aria-hidden="true"></i></div>
+        <div class="check-label">EIA aprobado por MiAmbiente<div class="check-source">Ministerio de Ambiente · Ley 8/2015</div></div>
+        <div class="check-result" id="res-eia">—</div>
+      </div>
+      <div class="check-row" id="chk-idoneidad">
+        <div class="check-icon" id="ico-idoneidad"><i class="ti ti-certificate" aria-hidden="true"></i></div>
+        <div class="check-label">Idoneidad del apoderado legal<div class="check-source">Órgano Judicial · Registro de Abogados</div></div>
+        <div class="check-result" id="res-idoneidad">—</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+      <button class="btn btn-primary" id="btn-verificar" onclick="runVerification()"><i class="ti ti-player-play" aria-hidden="true"></i> Ejecutar verificaciones</button>
+      <span id="verif-status" style="font-size:11px;color:var(--gray-400)"></span>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="sec-docs" style="display:none">
+  <div class="sec-head">
+    <div class="sec-title"><i class="ti ti-files" aria-hidden="true"></i> Revisión de documentos cargados</div>
+    <span class="pill" id="docs-badge">—</span>
+  </div>
+  <div class="sec-body">
+    <div class="doc-grid" id="doc-grid"></div>
+    <div id="subsanar-section" style="display:none;margin-top:12px">
+      <div class="alert alert-warn"><i class="ti ti-alert-triangle" aria-hidden="true"></i><span>Faltan <strong id="missing-count">0</strong> documentos obligatorios. Se enviará notificación automática al solicitante.</span></div>
+      <div class="subsanar-list" id="subsanar-list"></div>
+    </div>
+  </div>
+</div>
+
+<div class="section" id="sec-expediente" style="display:none">
+  <div class="sec-head">
+    <div class="sec-title"><i class="ti ti-folder-check" aria-hidden="true"></i> Generación del expediente digital</div>
+    <span class="pill pill-ok">Automático</span>
+  </div>
+  <div class="sec-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+      <div class="exp-box">
+        <div style="font-size:11px;color:#0F6E56;text-transform:uppercase;letter-spacing:.5px">Número de expediente</div>
+        <div class="exp-num" id="exp-num">—</div>
+        <div class="exp-sub">Generado automáticamente</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:0.5px solid var(--gray-200)"><span style="color:var(--gray-400)">Fecha de recepción</span><span id="exp-fecha">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:0.5px solid var(--gray-200)"><span style="color:var(--gray-400)">Plazo legal</span><span>45 días hábiles</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;border-bottom:0.5px solid var(--gray-200)"><span style="color:var(--gray-400)">Fecha límite</span><span id="exp-limite" style="font-weight:500;color:var(--amber)">—</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0"><span style="color:var(--gray-400)">Analista asignado</span><span>Por asignar</span></div>
+      </div>
+    </div>
+    <div class="timeline" id="exp-timeline"></div>
+  </div>
+</div>
+
+<div class="section" id="sec-notif" style="display:none">
+  <div class="sec-head">
+    <div class="sec-title"><i class="ti ti-mail" aria-hidden="true"></i> Notificaciones enviadas</div>
+    <span class="pill pill-ok" id="notif-count">—</span>
+  </div>
+  <div class="sec-body">
+    <div id="notif-list" style="display:flex;flex-direction:column;gap:10px"></div>
+  </div>
+</div>
+
+<div id="sec-resumen" style="display:none;margin-top:4px">
+  <div class="alert" id="resumen-alert">
+    <i class="ti ti-info-circle" aria-hidden="true" style="flex-shrink:0;margin-top:1px"></i>
+    <span id="resumen-text"></span>
+  </div>
+  <div style="display:flex;gap:8px">
+    <button class="btn btn-primary" onclick="sendPrompt('¿Cómo integramos las APIs del Registro Público y la DGI para que estas verificaciones sean reales?')">¿Cómo integrar las APIs reales? ↗</button>
+    <button class="btn" onclick="sendPrompt('¿Qué pasa cuando el EIA no está aprobado? ¿Se puede recibir la solicitud igual?')">¿Qué pasa si falta el EIA? ↗</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+const CHECKS=[
+  {id:'cedula',result:'ok',msg:'8-742-3156 · Vigente',delay:600},
+  {id:'registro',result:'ok',msg:'Folio 234891 · Activa',delay:1100},
+  {id:'pys',result:'ok',msg:'Vigente hasta dic 2026',delay:1700},
+  {id:'pysarap',result:'fail',msg:'No encontrado',delay:2200},
+  {id:'eia',result:'ok',msg:'Res. DIA-2025-0341',delay:2800},
+  {id:'idoneidad',result:'ok',msg:'Lic. C. Núñez · Activo',delay:3300},
+];
+
+const DOCS=[
+  {name:'Cédula representante legal',ok:true},
+  {name:'Cert. Registro Público',ok:true},
+  {name:'Paz y Salvo Nacional',ok:true},
+  {name:'Paz y Salvo ARAP',ok:false},
+  {name:'Planos del área',ok:true},
+  {name:'Planos del proyecto',ok:true},
+  {name:'Estudio de factibilidad',ok:true},
+  {name:'Plan de desarrollo',ok:true},
+  {name:'EIA aprobado',ok:true},
+  {name:'Resolución EIA',ok:true},
+  {name:'Fotografías aéreas',ok:true},
+  {name:'Georeferenciación',ok:true},
+];
+
+let running=false;
+
+function setStateBar(active){
+  for(let i=0;i<4;i++){
+    const el=document.getElementById('st'+i);
+    el.className='state-step'+(i<active?' done':i===active?' active':'');
+  }
+}
+
+function runVerification(){
+  if(running) return;
+  running=true;
+  document.getElementById('btn-verificar').disabled=true;
+  document.getElementById('btn-verificar').innerHTML='<i class="ti ti-loader" aria-hidden="true"></i> Verificando...';
+  document.getElementById('verif-badge').className='pill pill-warn';
+  document.getElementById('verif-badge').textContent='En proceso...';
+  setStateBar(1);
+
+  let done=0;
+  CHECKS.forEach(c=>{
+    const row=document.getElementById('chk-'+c.id);
+    const ico=document.getElementById('ico-'+c.id);
+    const res=document.getElementById('res-'+c.id);
+    setTimeout(()=>{
+      row.className='check-row running';
+      ico.innerHTML='<i class="ti ti-refresh" aria-hidden="true"></i>';
+      res.textContent='Consultando...';
+      document.getElementById('verif-status').textContent='Verificando: '+row.querySelector('.check-label').textContent.split('\n')[0].trim()+'...';
+    },c.delay);
+    setTimeout(()=>{
+      row.className='check-row '+(c.result==='ok'?'ok':'fail');
+      ico.innerHTML=c.result==='ok'?'<i class="ti ti-check" aria-hidden="true"></i>':'<i class="ti ti-x" aria-hidden="true"></i>';
+      res.textContent=c.msg;
+      done++;
+      if(done===CHECKS.length) afterVerification();
+    },c.delay+700);
+  });
+}
+
+function afterVerification(){
+  const failed=CHECKS.filter(c=>c.result==='fail').length;
+  document.getElementById('verif-badge').className='pill '+(failed?'pill-warn':'pill-ok');
+  document.getElementById('verif-badge').textContent=failed?failed+' advertencia'+(failed>1?'s':''):'Todo correcto';
+  document.getElementById('verif-status').textContent='';
+  document.getElementById('btn-verificar').innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Verificaciones completadas';
+
+  setTimeout(()=>{
+    showDocs();
+  },500);
+}
+
+function showDocs(){
+  const sec=document.getElementById('sec-docs');
+  sec.style.display='block';
+  const grid=document.getElementById('doc-grid');
+  grid.innerHTML=DOCS.map(d=>`
+    <div class="doc-chip ${d.ok?'ok':'fail'}">
+      <i class="ti ti-${d.ok?'circle-check':'circle-x'}" aria-hidden="true"></i>
+      ${d.name}
+    </div>`).join('');
+
+  const missing=DOCS.filter(d=>!d.ok);
+  const badge=document.getElementById('docs-badge');
+  if(missing.length){
+    badge.className='pill pill-warn';
+    badge.textContent=missing.length+' faltante'+(missing.length>1?'s':'');
+    document.getElementById('subsanar-section').style.display='block';
+    document.getElementById('missing-count').textContent=missing.length;
+    document.getElementById('subsanar-list').innerHTML=missing.map(d=>`
+      <div class="subsanar-item"><i class="ti ti-alert-circle" aria-hidden="true"></i>${d.name} — requerido para continuar</div>`).join('');
+  } else {
+    badge.className='pill pill-ok';
+    badge.textContent='Completo';
+  }
+
+  setTimeout(showExpediente, 600);
+}
+
+function showExpediente(){
+  const sec=document.getElementById('sec-expediente');
+  sec.style.display='block';
+  setStateBar(2);
+
+  const now=new Date();
+  const expNum='ARAP-ACU-2026-'+String(Math.floor(Math.random()*900)+100).padStart(5,'0');
+  document.getElementById('exp-num').textContent=expNum;
+
+  const fmt=d=>d.toLocaleDateString('es-PA',{day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('exp-fecha').textContent=fmt(now)+' · '+now.toLocaleTimeString('es-PA',{hour:'2-digit',minute:'2-digit'});
+
+  const limite=new Date(now);
+  limite.setDate(limite.getDate()+63);
+  document.getElementById('exp-limite').textContent=fmt(limite);
+
+  const tlItems=[
+    {done:true,label:'Solicitud recibida vía portal',detail:'Formulario completado · Pago B/. 450.00 registrado',time:fmt(now)+' 09:14'},
+    {done:true,label:'Verificaciones automáticas ejecutadas',detail:'5 de 6 verificaciones exitosas · 1 advertencia: Paz y Salvo ARAP',time:fmt(now)+' 09:16'},
+    {done:false,warn:true,label:'Subsanación solicitada al ciudadano',detail:'Notificación enviada a cnunez@acuveraguas.com',time:'Pendiente respuesta'},
+    {done:false,label:'Revisión técnica documental',detail:'Analista técnico ARAP',time:'Por programar'},
+    {done:false,label:'Inspección de campo',detail:'Inspector ARAP + coordenadas GPS',time:'Por programar'},
+    {done:false,label:'Resolución de concesión',detail:'Firma digital del Director General',time:'Por emitir'},
+  ];
+
+  let tlHtml='';
+  tlItems.forEach((t,i)=>{
+    tlHtml+=`<div class="tl-row">
+      <div class="tl-left">
+        <div class="tl-dot ${t.done?'done':t.warn?'warn':'pending'}"></div>
+        ${i<tlItems.length-1?'<div class="tl-line"></div>':''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-title" style="${t.warn?'color:var(--amber)':''}">${t.label}</div>
+        <div class="tl-detail">${t.detail}</div>
+        <div class="tl-time">${t.time}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('exp-timeline').innerHTML=tlHtml;
+
+  setTimeout(showNotificaciones, 600);
+}
+
+function showNotificaciones(){
+  const sec=document.getElementById('sec-notif');
+  sec.style.display='block';
+  setStateBar(3);
+
+  const notifs=[
+    {
+      to:'cnunez@acuveraguas.com',
+      tipo:'Confirmación de recepción',
+      pill:'pill-ok',
+      pillText:'Enviado',
+      body:`Estimado Lic. Núñez, su solicitud de concesión para acuicultura ha sido recibida exitosamente.`,
+      exp:document.getElementById('exp-num').textContent,
+    },
+    {
+      to:'cnunez@acuveraguas.com',
+      tipo:'Subsanación requerida',
+      pill:'pill-warn',
+      pillText:'Enviado',
+      body:`Se identificó que falta el Paz y Salvo ARAP vigente (D.E. 111 de 2018). Tiene <strong>10 días hábiles</strong> para cargarlo en el portal.`,
+      exp:null,
+    },
+  ];
+
+  document.getElementById('notif-count').textContent=notifs.length+' enviadas';
+  document.getElementById('notif-list').innerHTML=notifs.map(n=>`
+    <div class="notif-card">
+      <div class="notif-header">
+        <i class="ti ti-mail" aria-hidden="true"></i>
+        <span>Para: ${n.to}</span>
+        <span style="margin-left:auto;display:flex;align-items:center;gap:6px">
+          <span class="pill ${n.pill}">${n.pillText}</span>
+          <strong>${n.tipo}</strong>
+        </span>
+      </div>
+      <div class="notif-body">
+        ${n.exp?`<div class="notif-hl">Expediente: ${n.exp}</div>`:''}
+        ${n.body}
+      </div>
+    </div>`).join('');
+
+  setTimeout(showResumen, 500);
+}
+
+function showResumen(){
+  const el=document.getElementById('sec-resumen');
+  el.style.display='block';
+  document.getElementById('resumen-alert').className='alert alert-warn';
+  document.getElementById('resumen-text').innerHTML='Expediente creado y en espera de subsanación. El solicitante debe cargar el <strong>Paz y Salvo ARAP</strong> antes de que avance a revisión técnica. Se envió notificación automática. No se requiere acción manual del funcionario.';
+}
+</script>

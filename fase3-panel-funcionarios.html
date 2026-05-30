@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ARAP — Panel interno de funcionarios</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#0A1628;--teal:#0D7A5F;--teal-bg:#E6F4F0;--teal-border:#9FE1CB;--teal-mid:#1A9B78;--amber:#BA7517;--amber-bg:#FEF6E4;--amber-border:#F0D06A;--red:#A32D2D;--red-bg:#FCEBEB;--red-border:#F7C1C1;--blue:#185FA5;--blue-bg:#E6F1FB;--blue-border:#B5D4F4;--gray-50:#F8F9FA;--gray-100:#F1F3F5;--gray-200:#E9ECEF;--gray-300:#DEE2E6;--gray-400:#868E96;--r:6px;}
+body{font-family:'DM Sans',sans-serif;font-size:13px;color:var(--navy);background:var(--gray-50);line-height:1.5}
+.topbar{background:var(--navy);padding:10px 16px;display:flex;align-items:center;gap:12px;border-bottom:2px solid var(--teal)}
+.topbar-logo{background:var(--teal);color:#fff;font-weight:600;font-size:12px;padding:4px 10px;border-radius:4px;letter-spacing:.5px}
+.topbar-title{color:#fff;font-size:13px;font-weight:500}
+.topbar-user{margin-left:auto;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,.7);font-size:12px}
+.topbar-avatar{width:28px;height:28px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600}
+.layout{display:grid;grid-template-columns:180px 1fr}
+.sidebar{background:#fff;border-right:0.5px solid var(--gray-200);padding:12px 0;min-height:800px}
+.nav-item{display:flex;align-items:center;gap:8px;padding:7px 14px;cursor:pointer;font-size:12px;color:var(--gray-400);transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{background:var(--gray-50);color:var(--navy)}
+.nav-item.active{color:var(--teal);background:var(--teal-bg);border-left-color:var(--teal)}
+.nav-badge{margin-left:auto;background:var(--red-bg);color:var(--red);font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px}
+.nav-section{padding:10px 14px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--gray-400);margin-top:6px}
+.content{padding:16px}
+.view{display:none}
+.view.active{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.kpi{background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);padding:12px}
+.kpi-label{font-size:11px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.4px}
+.kpi-val{font-size:22px;font-weight:500;margin-top:2px}
+.kpi-val.warn{color:var(--amber)}.kpi-val.danger{color:var(--red)}.kpi-val.ok{color:var(--teal)}
+.toolbar{display:flex;gap:8px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.search-box{flex:1;min-width:160px;display:flex;align-items:center;gap:6px;background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);padding:6px 10px}
+.search-box input{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:12px;width:100%;background:transparent;color:var(--navy)}
+.filter-btn{display:flex;align-items:center;gap:4px;padding:6px 10px;background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);font-size:12px;cursor:pointer;color:var(--navy);transition:all .15s}
+.filter-btn:hover{background:var(--gray-50)}
+.filter-btn.active{background:var(--teal-bg);border-color:var(--teal);color:var(--teal)}
+.table-wrap{background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);overflow:hidden}
+table{width:100%;border-collapse:collapse;table-layout:fixed}
+th{background:var(--gray-50);padding:8px 10px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;color:var(--gray-400);border-bottom:0.5px solid var(--gray-200)}
+td{padding:9px 10px;border-bottom:0.5px solid var(--gray-100);vertical-align:middle;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--gray-50)}
+.badge{display:inline-flex;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:600}
+.badge-new{background:#E6F1FB;color:#185FA5}.badge-review{background:var(--amber-bg);color:var(--amber)}.badge-inspect{background:#F3EDFE;color:#534AB7}.badge-approved{background:var(--teal-bg);color:var(--teal)}.badge-subsanar{background:var(--red-bg);color:var(--red)}
+.dot{width:6px;height:6px;border-radius:50%;display:inline-block;margin-right:3px}
+.dot-new{background:#185FA5}.dot-review{background:var(--amber)}.dot-inspect{background:#534AB7}.dot-approved{background:var(--teal)}.dot-subsanar{background:var(--red)}
+.action-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 8px;border:0.5px solid var(--gray-200);border-radius:4px;font-size:11px;cursor:pointer;background:#fff;color:var(--navy);transition:all .1s}
+.action-btn:hover{background:var(--gray-50)}
+.action-btn.primary{background:var(--teal);color:#fff;border-color:var(--teal)}
+.action-btn.warn{background:var(--amber-bg);color:var(--amber);border-color:var(--amber-border)}
+.detail-panel{background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);margin-top:12px;overflow:hidden}
+.detail-header{padding:12px 14px;background:var(--gray-50);border-bottom:0.5px solid var(--gray-200);display:flex;align-items:center;justify-content:space-between}
+.detail-body{padding:14px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.detail-section-title{font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--gray-400);margin-bottom:8px;font-weight:600}
+.detail-row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:0.5px solid var(--gray-100);font-size:12px}
+.detail-row:last-child{border-bottom:none}
+.detail-row span:first-child{color:var(--gray-400)}
+.doc-row{display:flex;align-items:center;gap:6px;padding:5px 8px;border:0.5px solid var(--gray-200);border-radius:4px;font-size:11px;margin-bottom:4px}
+.doc-row.ok{border-color:var(--teal-border);background:var(--teal-bg);color:#085041}
+.doc-row.missing{border-color:var(--red-border);background:var(--red-bg);color:var(--red)}
+.tl-item{display:flex;gap:10px;padding:6px 0}
+.tl-dot-sm{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.tl-dot-sm.done{background:var(--teal)}.tl-dot-sm.active{background:var(--amber)}.tl-dot-sm.pending{background:var(--gray-300)}
+.pag{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border-top:0.5px solid var(--gray-200);background:var(--gray-50);font-size:11px;color:var(--gray-400)}
+.tab-row{display:flex;border-bottom:0.5px solid var(--gray-200)}
+.tab{padding:8px 14px;font-size:12px;cursor:pointer;border-bottom:2px solid transparent;color:var(--gray-400)}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--teal);border-bottom-color:var(--teal)}
+.comment-box textarea{width:100%;border:0.5px solid var(--gray-200);border-radius:var(--r);padding:8px;font-family:'DM Sans',sans-serif;font-size:12px;color:var(--navy);resize:none;outline:none}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="topbar-logo">ARAP</span>
+  <span class="topbar-title">Sistema de gestión de concesiones acuícolas</span>
+  <div class="topbar-user"><div class="topbar-avatar">RV</div><span>Lic. R. Vargas · Analista técnico</span></div>
+</div>
+<div class="layout">
+<div class="sidebar">
+  <div class="nav-section">Principal</div>
+  <div class="nav-item active" onclick="showView('bandeja',this)">📥 Bandeja<span class="nav-badge">5</span></div>
+  <div class="nav-item" onclick="showView('inspecciones',this)">📋 Inspecciones</div>
+  <div class="nav-item" onclick="showView('reportes',this)">📊 Reportes</div>
+  <div class="nav-section">Admin</div>
+  <div class="nav-item">⚙ Configuración</div>
+</div>
+<div class="content">
+
+<div class="view active" id="view-bandeja">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Total activos</div><div class="kpi-val">24</div><div style="font-size:11px;color:var(--gray-400)">expedientes abiertos</div></div>
+    <div class="kpi"><div class="kpi-label">Nuevos hoy</div><div class="kpi-val ok">3</div><div style="font-size:11px;color:var(--gray-400)">pendientes de asignar</div></div>
+    <div class="kpi"><div class="kpi-label">Vencen esta semana</div><div class="kpi-val warn">5</div><div style="font-size:11px;color:var(--gray-400)">plazo 45 días hábiles</div></div>
+    <div class="kpi"><div class="kpi-label">Subsanaciones</div><div class="kpi-val danger">2</div><div style="font-size:11px;color:var(--gray-400)">esperando respuesta</div></div>
+  </div>
+  <div class="toolbar">
+    <div class="search-box"><span>🔍</span><input type="text" placeholder="Buscar por expediente, solicitante..." oninput="filterTable(this.value)"></div>
+    <div class="filter-btn active" onclick="setFilter(this,'todos')">Todos</div>
+    <div class="filter-btn" onclick="setFilter(this,'nuevos')"><span class="dot dot-new"></span>Nuevos</div>
+    <div class="filter-btn" onclick="setFilter(this,'revision')"><span class="dot dot-review"></span>En revisión</div>
+    <div class="filter-btn" onclick="setFilter(this,'subsanar')"><span class="dot dot-subsanar"></span>Subsanar</div>
+  </div>
+  <div class="table-wrap">
+    <div class="tab-row">
+      <div class="tab active">Mis expedientes (8)</div>
+      <div class="tab">Todos (24)</div>
+      <div class="tab">Urgentes (5)</div>
+    </div>
+    <table><colgroup><col style="width:110px"><col style="width:150px"><col style="width:110px"><col style="width:80px"><col style="width:70px"><col style="width:60px"><col style="width:100px"></colgroup>
+      <thead><tr><th>Expediente</th><th>Solicitante</th><th>Proyecto</th><th>Estado</th><th>Área</th><th>Días</th><th>Acción</th></tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="pag"><span>Mostrando 1–8 de 24 expedientes</span><span>← Anterior &nbsp; Siguiente →</span></div>
+  </div>
+  <div class="detail-panel" id="detail-panel" style="display:none">
+    <div class="detail-header">
+      <div><span style="font-weight:500;font-size:13px" id="det-exp"></span><span id="det-badge" style="margin-left:8px"></span></div>
+      <div style="display:flex;gap:6px">
+        <button class="action-btn warn" onclick="alert('Formulario de subsanación: especifique los documentos a corregir')">⚠ Solicitar subsanación</button>
+        <button class="action-btn primary" onclick="alert('Confirme el avance a la siguiente etapa')">✓ Aprobar etapa</button>
+        <button class="action-btn" onclick="closeDetail()">✕</button>
+      </div>
+    </div>
+    <div class="detail-body">
+      <div>
+        <div class="detail-section-title">Datos del solicitante</div>
+        <div id="det-datos"></div>
+        <div style="margin-top:14px">
+          <div class="detail-section-title">Línea de tiempo</div>
+          <div id="det-timeline"></div>
+        </div>
+        <div style="margin-top:10px">
+          <div class="detail-section-title" style="margin-bottom:6px">Nota interna</div>
+          <div class="comment-box"><textarea rows="3" placeholder="Agregar comentario técnico..."></textarea></div>
+          <div style="display:flex;justify-content:flex-end;margin-top:6px"><button class="action-btn primary">Guardar nota</button></div>
+        </div>
+      </div>
+      <div>
+        <div class="detail-section-title">Documentos cargados</div>
+        <div id="det-docs"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-inspecciones">
+  <div style="background:#fff;border:0.5px solid var(--gray-200);border-radius:var(--r);padding:16px">
+    <div style="font-weight:500;font-size:14px;margin-bottom:12px">Inspecciones programadas</div>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="border:0.5px solid var(--gray-200);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:12px"><div style="background:#F3EDFE;color:#534AB7;padding:6px 10px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap">02 Jun 2026</div><div style="flex:1"><div style="font-weight:500;font-size:12px">ARAP-ACU-2026-00135 · Granja Camarón del Pacífico</div><div style="color:var(--gray-400);font-size:11px">Chiriquí, David — Inspector: Ing. M. Castillo</div></div><button class="action-btn primary">Acta</button></div>
+      <div style="border:0.5px solid var(--gray-200);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:12px"><div style="background:#F3EDFE;color:#534AB7;padding:6px 10px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap">05 Jun 2026</div><div style="flex:1"><div style="font-weight:500;font-size:12px">ARAP-ACU-2026-00138 · Tilapias Los Santos S.A.</div><div style="color:var(--gray-400);font-size:11px">Los Santos, Chitré — Inspector: Ing. R. Vargas</div></div><button class="action-btn primary">Acta</button></div>
+      <div style="border:0.5px solid var(--gray-200);border-radius:var(--r);padding:10px 12px;display:flex;align-items:center;gap:12px"><div style="background:var(--amber-bg);color:var(--amber);padding:6px 10px;border-radius:4px;font-size:11px;font-weight:600;white-space:nowrap">12 Jun 2026</div><div style="flex:1"><div style="font-weight:500;font-size:12px">ARAP-ACU-2026-00141 · Acuícola Veraguas</div><div style="color:var(--gray-400);font-size:11px">Veraguas, Santiago — Por asignar inspector</div></div><button class="action-btn">+ Asignar</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="view" id="view-reportes">
+  <div class="kpi-row">
+    <div class="kpi"><div class="kpi-label">Aprobadas (2026)</div><div class="kpi-val ok">7</div></div>
+    <div class="kpi"><div class="kpi-label">Tiempo promedio</div><div class="kpi-val">38</div><div style="font-size:11px;color:var(--gray-400)">días hábiles</div></div>
+    <div class="kpi"><div class="kpi-label">Rechazadas</div><div class="kpi-val danger">2</div></div>
+    <div class="kpi"><div class="kpi-label">Ha concesionadas</div><div class="kpi-val ok">1,240</div></div>
+  </div>
+</div>
+
+</div>
+</div>
+<script>
+const DATA=[
+  {exp:'ARAP-ACU-2026-00141',sol:'Acuícola Veraguas S.A.',proy:'Granja tilapia',estado:'nuevo',area:'12.5 ha',dias:2,rep:'Lic. Carlos Núñez',email:'cnunez@acuveraguas.com',especie:'Tilapia',provincia:'Veraguas',docs:{cedula:true,registro:true,pys:true,pysarap:false,planos:true,eia:true,factib:true,plan:false}},
+  {exp:'ARAP-ACU-2026-00140',sol:'Granja Camarón del Pacífico',proy:'Cultivo camarón',estado:'inspeccion',area:'28.0 ha',dias:18,rep:'Lic. Ana Tejada',email:'atejada@gcpacifico.com',especie:'Camarón',provincia:'Chiriquí',docs:{cedula:true,registro:true,pys:true,pysarap:true,planos:true,eia:true,factib:true,plan:true}},
+  {exp:'ARAP-ACU-2026-00139',sol:'Luis E. Martínez',proy:'Ostra perla Coiba',estado:'revision',area:'4.2 ha',dias:31,rep:'Lic. Pedro Salas',email:'psalas@bufete.com',especie:'Ostras',provincia:'Veraguas',docs:{cedula:true,registro:false,pys:true,pysarap:true,planos:true,eia:true,factib:false,plan:true}},
+  {exp:'ARAP-ACU-2026-00138',sol:'Tilapias Los Santos S.A.',proy:'Expansión Chitré',estado:'inspeccion',area:'7.8 ha',dias:22,rep:'Lic. M. González',email:'mgonzalez@tls.com',especie:'Tilapia',provincia:'Los Santos',docs:{cedula:true,registro:true,pys:true,pysarap:true,planos:true,eia:true,factib:true,plan:true}},
+  {exp:'ARAP-ACU-2026-00137',sol:'Industria Piscícola Bocas',proy:'Jaulas Isla Colón',estado:'subsanar',area:'1.0 ha',dias:38,rep:'Lic. R. Araúz',email:'rarauza@ipbocas.com',especie:'Corvina',provincia:'Bocas del Toro',docs:{cedula:true,registro:true,pys:false,pysarap:false,planos:true,eia:true,factib:true,plan:true}},
+  {exp:'ARAP-ACU-2026-00136',sol:'Trucha Boquete S.A.',proy:'Granja trucha Caldera',estado:'revision',area:'3.1 ha',dias:29,rep:'Lic. I. Vásquez',email:'ivasquez@truchab.com',especie:'Trucha',provincia:'Chiriquí',docs:{cedula:true,registro:true,pys:true,pysarap:true,planos:false,eia:true,factib:true,plan:true}},
+  {exp:'ARAP-ACU-2026-00135',sol:'Camarones del Atlántico',proy:'Cultivo larval Colón',estado:'nuevo',area:'18.0 ha',dias:1,rep:'Lic. D. Mora',email:'dmora@camatlantic.com',especie:'Camarón',provincia:'Colón',docs:{cedula:true,registro:true,pys:true,pysarap:true,planos:true,eia:false,factib:true,plan:true}},
+  {exp:'ARAP-ACU-2026-00134',sol:'Pesca y Cultivo Herrera',proy:'Semi-int. camarón',estado:'approved',area:'9.4 ha',dias:44,rep:'Lic. L. Ríos',email:'lrios@pch.com',especie:'Camarón',provincia:'Herrera',docs:{cedula:true,registro:true,pys:true,pysarap:true,planos:true,eia:true,factib:true,plan:true}},
+];
+const LABELS={nuevo:'Nuevo',revision:'En revisión',inspeccion:'Inspección',approved:'Aprobado',subsanar:'Subsanar'};
+const BADGE={nuevo:'badge-new',revision:'badge-review',inspeccion:'badge-inspect',approved:'badge-approved',subsanar:'badge-subsanar'};
+const DOC_NAMES={cedula:'Cédula rep. legal',registro:'Cert. Registro Público',pys:'Paz y Salvo Nacional',pysarap:'Paz y Salvo ARAP',planos:'Planos del proyecto',eia:'EIA aprobado',factib:'Estudio de factibilidad',plan:'Plan de desarrollo'};
+let currentFilter='todos';
+function renderTable(rows){
+  document.getElementById('tbody').innerHTML=(rows&&rows.length)?rows.map(r=>`
+    <tr style="cursor:pointer" onclick="showDetail('${r.exp}')">
+      <td style="font-weight:500;color:var(--teal)">${r.exp.replace('ARAP-ACU-2026-','')}</td>
+      <td>${r.sol}</td><td>${r.proy}</td>
+      <td><span class="badge ${BADGE[r.estado]}">${LABELS[r.estado]}</span></td>
+      <td>${r.area}</td>
+      <td style="${r.dias>=40?'color:var(--red);font-weight:500':r.dias>=30?'color:var(--amber)':''}">${r.dias}d</td>
+      <td><button class="action-btn primary" onclick="event.stopPropagation();showDetail('${r.exp}')">Ver</button></td>
+    </tr>`).join(''):'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--gray-400)">No hay expedientes</td></tr>';
+}
+function filterTable(q){const f=DATA.filter(r=>!q||r.exp.toLowerCase().includes(q.toLowerCase())||r.sol.toLowerCase().includes(q.toLowerCase()));renderTable(currentFilter==='todos'?f:f.filter(r=>mapFilter(r.estado)));}
+function mapFilter(e){if(currentFilter==='todos')return true;if(currentFilter==='nuevos')return e==='nuevo';if(currentFilter==='revision')return e==='revision';if(currentFilter==='subsanar')return e==='subsanar';return true;}
+function setFilter(el,f){currentFilter=f;document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');renderTable(DATA.filter(r=>mapFilter(r.estado)));}
+function showDetail(expId){
+  const r=DATA.find(d=>d.exp===expId);if(!r)return;
+  document.getElementById('detail-panel').style.display='block';
+  document.getElementById('det-exp').textContent=r.exp;
+  document.getElementById('det-badge').innerHTML=`<span class="badge ${BADGE[r.estado]}">${LABELS[r.estado]}</span>`;
+  document.getElementById('det-datos').innerHTML=`<div class="detail-row"><span>Solicitante</span><span>${r.sol}</span></div><div class="detail-row"><span>Apoderado</span><span>${r.rep}</span></div><div class="detail-row"><span>Correo</span><span style="color:var(--blue)">${r.email}</span></div><div class="detail-row"><span>Especie</span><span>${r.especie}</span></div><div class="detail-row"><span>Provincia</span><span>${r.provincia}</span></div><div class="detail-row"><span>Área</span><span>${r.area}</span></div><div class="detail-row"><span>Días en trámite</span><span style="${r.dias>=40?'color:var(--red);font-weight:500':''}">${r.dias} días</span></div>`;
+  const tlL=['Solicitud recibida','Revisión documental','Inspección de campo','Resolución emitida'];
+  const idx=['nuevo','revision','inspeccion','approved'].indexOf(r.estado);
+  document.getElementById('det-timeline').innerHTML=tlL.map((l,i)=>`<div class="tl-item"><div class="tl-dot-sm ${i<idx?'done':i===idx?'active':'pending'}"></div><div style="font-size:11px"><div style="font-weight:500">${l}</div><div style="color:var(--gray-400)">${i<=idx?'Completado':'Pendiente'}</div></div></div>`).join('');
+  document.getElementById('det-docs').innerHTML=Object.entries(r.docs).map(([k,v])=>`<div class="doc-row ${v?'ok':'missing'}">${v?'✓':'✗'} ${DOC_NAMES[k]}</div>`).join('');
+}
+function closeDetail(){document.getElementById('detail-panel').style.display='none';}
+function showView(v,el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  document.getElementById('view-'+v).classList.add('active');
+  if(el)el.classList.add('active');
+}
+renderTable(DATA);
+</script>
+</body>
+</html>
